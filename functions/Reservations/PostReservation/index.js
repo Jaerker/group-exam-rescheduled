@@ -1,7 +1,8 @@
-exports.handler = (statusCode, body) => {
+// const {db} = require('../../services/index');
+const {response} = require('../../../responses/index');
+exports.handler = async (event) => {
 
-  return {
-    statusCode: statusCode,
-    body: JSON.stringify(body),
+
+
+    return response(200, 'ok fungerar i PostReservation');
   };
-};
