@@ -1,6 +1,6 @@
-const {DynamoDb} = require('@aws-sdk/client-dynamodb');
-const {DynamoDbDocument} = require('@aws-sdk/lib-dynamodb');
-const client = new DynamoDb();
-const db = DynamoDbDocument.from(client);
+const {DynamoDB} = require('@aws-sdk/client-dynamodb');
+const {DynamoDBDocument} = require('@aws-sdk/lib-dynamodb');
+const client = new DynamoDB();
+const db = DynamoDBDocument.from(client);
 
 module.exports = { db };
