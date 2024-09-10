@@ -7,7 +7,8 @@ exports.handler = async (event) => {
 	if(room){
 		try {
 			let numAlreadyExists = false;
-			const { Items } = await db.scan({
+			
+			const { Items } = await db.scan({ //Ska göra detta till en funktion sen
 				TableName: 'bonz-ai-db',
 				FilterExpression: 'attribute_exists(#sk)',
 				ExpressionAttributeNames: {
