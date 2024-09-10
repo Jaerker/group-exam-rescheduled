@@ -1,4 +1,4 @@
-// const {db} = require('../../services/index');
+// const {db} = require('../../../services/index');
 const {response} = require('../../../responses/index');
 exports.handler = async (event) => {
 

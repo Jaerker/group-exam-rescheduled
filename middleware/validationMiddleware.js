@@ -1,7 +1,8 @@
 
 
 const validateRoomData = (room) => {
-    if( !room.HasOwnProperty('roomType') || 
+    if( !room ||
+        !room.HasOwnProperty('roomType') || 
         !room.HasOwnProperty('price') || 
         !room.HasOwnProperty('bedsInRoom') || 
         !room.HasOwnProperty('isAvaliable') || 
