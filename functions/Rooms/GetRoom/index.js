@@ -1,22 +1,13 @@
-const {db} = require('../../../services');
+const {agent} = require('../../../services');
 const {response} = require('../../../responses/index');
 exports.handler = async (event) => {
 
   try{
     const {id} = event.pathParameters;
-    if(id){
-      const {Item} = await db.get({
-        TableName: 'bonz-ai-db',
-        Key: {
-          pk: id,
-          sk: 'room'
-        }
-      });
-      if(Item){
-        return response(200,Item);
-      }
-      return response(404,'Not Found');
-  
+    
+    const room = await agent.rooms.getById(id);
+    if(!room){
+      return response(200, room);
     }
     return response(400,'Something wrong with id');
   }catch(error){
