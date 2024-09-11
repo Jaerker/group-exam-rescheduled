@@ -11,7 +11,7 @@ exports.handler = async (event) => {
 	const rooms = await agent.rooms.getAll();
 
 	if(avaliableRoomsOnly){
-	    return response(200, rooms.filter(room => room.object.isAvaliable === true));
+	    return response(200, rooms.filter(room => room.data.isAvaliable === true));
 	}
 
 	return response(200, rooms);

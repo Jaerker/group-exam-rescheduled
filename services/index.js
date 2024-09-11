@@ -40,19 +40,18 @@ const dbCall = {
             Item: {
                 pk: pk,
                 sk: createId(),
-                object: data
+                data: data
             }
         });
     },
     updateItem: async (pk, id, data) => {
-
         if(pk === 'room'){
             await db.put({
                 TableName: 'bonz-ai-db',
                 Item: {
                     pk: pk,
                     sk: id,
-                    object: data
+                    data: data
                 }
             });    
         }
@@ -68,7 +67,11 @@ const dbCall = {
     }
 }
 
-
+const reservations = {
+    getById:    (id) => dbCall.getItem('reservation', id),
+    getAll:    () => dbCall.getItems('reservation'),
+    //Här kan man lägga till create, update och delete
+}
 
 const rooms = {
     getById:    (id) => dbCall.getItem('room', id),
@@ -79,7 +82,8 @@ const rooms = {
 }
 
 const agent = {
-    rooms: rooms
+    rooms: rooms,
+    reservations: reservations
 }
 
 module.exports = { db, agent, createId };

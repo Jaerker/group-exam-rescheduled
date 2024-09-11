@@ -7,7 +7,6 @@ exports.handler = async (event) => {
 	if(room){
 		try {
             id = event.pathParameters.id;
-            
 			await agent.rooms.update(id, room);
 
 			return response(200, room);
@@ -15,6 +14,5 @@ exports.handler = async (event) => {
 			return response(400, `Error: ${error}`);
 		}
 	}
-	return response(400,'Wrong data in body.');
-
+	return response(400,'Wrong data in body');
 };

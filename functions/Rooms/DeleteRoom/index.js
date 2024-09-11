@@ -13,5 +13,4 @@ exports.handler = async (event) => {
   }catch(error){
     return response(400, `Error: ${error.message}`);
   }
-
   };

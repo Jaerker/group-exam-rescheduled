@@ -10,7 +10,7 @@ exports.handler = async (event) => {
 			rooms = await agent.rooms.getAll();
 
 			rooms.forEach(item => {
-				if(item.object.roomNumber == room.roomNumber){
+				if(item.data.roomNumber == room.roomNumber){
 					numAlreadyExists = true;
 				}
 			});
