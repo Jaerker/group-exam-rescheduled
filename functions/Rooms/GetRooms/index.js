@@ -1,25 +1,18 @@
-const {db} = require('../../../services/index');
+const { agent } = require('../../../services');
 const { response } = require('../../../responses/index');
 exports.handler = async (event) => {
+	let avaliableRoomsOnly = false;
 
-  const {avaliableRoomsOnly} = event?.queryStringParameters;
+	try{
+		avaliableRoomsOnly = event.queryStringParameters.avaliableRoomsOnly === 'true';
+	}
+	catch{}
+	
+	const rooms = await agent.rooms.getAll();
 
-  const { Items } = await db.scan({
-    TableName: 'bonz-ai-db',
-    FilterExpression: 'attribute_exists(#sk)',
-    ExpressionAttributeNames: {
-      '#sk': 'sk'
-    }
-  });
-  if (Items) {
+	if(avaliableRoomsOnly){
+	    return response(200, rooms.filter(room => room.data.isAvaliable === true));
+	}
 
-    if(avaliableRoomsOnly === 'true'){
-      return response(200, Items.filter((item) => item.object.isAvaliable === true));
-    }
-
-
-    return response(200, Items);
-  }
-
-  return response(200, event);
+	return response(200, rooms);
 };
