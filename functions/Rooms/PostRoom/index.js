@@ -1,6 +1,5 @@
-const { db } = require('../../../services/index');
+const { db, createId } = require('../../../services/index');
 const { response } = require('../../../responses/index');
-const { v4: uuid } = require('uuid');
 
 exports.handler = async (event) => {
 	const room = JSON.parse(event.body);
@@ -28,7 +27,7 @@ exports.handler = async (event) => {
 			await db.put({
 				TableName: "bonz-ai-db",
 				Item: {
-					pk: uuid().substring(0, 6),
+					pk: createId(),
 					sk: "room",
 					object: {
 						roomType : 		room.roomType,
