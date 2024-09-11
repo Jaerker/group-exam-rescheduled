@@ -1,4 +1,4 @@
-const { db, createId } = require('../../../services/index');
+const { agent } = require('../../../services');
 const { response } = require('../../../responses/index');
 
 exports.handler = async (event) => {
@@ -7,43 +7,24 @@ exports.handler = async (event) => {
 		try {
 			let numAlreadyExists = false;
 			
-			const { Items } = await db.scan({ //Ska göra detta till en funktion sen
-				TableName: 'bonz-ai-db',
-				FilterExpression: 'attribute_exists(#sk)',
-				ExpressionAttributeNames: {
-				  '#sk': 'sk'
-				}
-			});
+			rooms = await agent.rooms.getAll();
 
-			Items.forEach(item => {
+			rooms.forEach(item => {
 				if(item.object.roomNumber == room.roomNumber){
 					numAlreadyExists = true;
 				}
 			});
 			
 			if(numAlreadyExists){ //Check om numret redan existerar i databasen.
-				return response(400, `Room with number: ${room.roomNumber} already exists`);
+				return response(400, `Room with number, or name: ${room.roomNumber} already exists`);
 			}
-			await db.put({
-				TableName: "bonz-ai-db",
-				Item: {
-					pk: createId(),
-					sk: "room",
-					object: {
-						roomType : 		room.roomType,
-						price : 		room.price,
-						bedsInRoom  : 	room.bedsInRoom,
-						isAvaliable : true,
-						roomNumber  : 	room.roomNumber
-					}
-				}
-			});
+			await agent.rooms.create(room);
+
 			return response(200, room);
 		} catch (error) {
 			return response(400, `Error: ${error}`);
 		}
 	}
-	
 	return response(400,'Wrong data in body.');
 
 };
