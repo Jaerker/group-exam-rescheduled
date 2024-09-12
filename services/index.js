@@ -8,7 +8,7 @@ const db = DynamoDBDocument.from(client);
 const createId = () => uuid().substring(0, 6);
 
 const dbCall = {
-    getItems: async (pk) => {
+    getItems: async (pk, isAvailable = false) => {
         const {Items} = await db.query({
             TableName: 'bonz-ai-db',
             KeyConditionExpression: 'pk = :pk',
@@ -16,6 +16,9 @@ const dbCall = {
               ':pk': pk,
             }
           });
+        if(isAvailable)
+            return Items.filter(room => room.data.isAvaliable === true);
+
         return Items;
     },
     getItem: async (pk, sk) => {
@@ -105,6 +108,7 @@ const reservations = {
 const rooms = {
   getById: (id) => dbCall.getItem("room", id),
   getAll: () => dbCall.getItems("room"),
+  getAllAvaliable: () => dbCall.getItems("room", true),
   create: (data) => dbCall.createItem("room", data),
   delete: (id) => dbCall.deleteItem("room", id),
   update: (id, data) => dbCall.updateItem("room", id, data),
