@@ -1,11 +1,10 @@
 const { agent } = require('../../../services');
 const { response } = require('../../../responses/index');
-
 exports.handler = async (event) => {
-	const room = JSON.parse(event.body);
+	const room = JSON.parse(event.body); 
 	if(room){
 		try {
-			let numAlreadyExists = false;
+			let numAlreadyExists = false; 
 			
 			rooms = await agent.rooms.getAll();
 
@@ -18,11 +17,12 @@ exports.handler = async (event) => {
 			if(numAlreadyExists){ //Check om numret redan existerar i databasen.
 				return response(400, `Room with number, or name: ${room.roomNumber} already exists`);
 			}
+			room.isAvaliable = true;
 			await agent.rooms.create(room);
 
 			return response(200, room);
 		} catch (error) {
-			return response(400, `Error: ${error}`);
+			return response(400, `Error: ${error.message}`);
 		}
 	}
 	return response(400,'Wrong data in body.');
