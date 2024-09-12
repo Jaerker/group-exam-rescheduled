@@ -92,9 +92,25 @@ exports.handler = async (event) => {
     await agent.reservations.create(bookingData);
 
     for (const type of roomType) {
-      const rooms = await agent.rooms.getAll();
+      const rooms = await agent.rooms.getAllAvaliable();
       let roomsUpdated = 0;
-
+      /**
+       * roomType kommer behöva vara antingen 'Enkelrum', 'Dubbelrum' eller 'Svit'
+       * 
+       * validateRoomData kommer inte behövas, då data har validerats in i databasen sen innan.
+       * 
+       * Kolla om rummet möter de kriterier man söker
+       * 
+       * kom ihåg att antalet rum får inte överstiga antalet gäster
+       * 
+       * Om rummet går att använda: 
+       *  ange rummets ID i en variabel som heter chosenRooms (en array med strängar)
+       *  I for loopen, sätt det aktuella rummets 'isAvaliable' till false (den som vars ID läggs i chosenRooms)
+       *  gör en await agent.rooms.update(room.sk, room.data)
+       * 
+       * Om det inte finnns några rum, eller inte tillräckligt med rum eller sängar så kan man returnera direkt
+       * 
+       */
       for (const room of rooms) {
         if (room.data.roomType === type && validateRoomData(room.data)) {
           await agent.rooms.update(room.sk, {
@@ -112,7 +128,7 @@ exports.handler = async (event) => {
       statusCode: 201,
       body: JSON.stringify({
         message: "Booking created successfully",
-        roomType,
+        roomType, // sätt in chosenRooms istället, alltså arrayen med rum ID 
         amountOfRooms,
         guests,
         checkIn,
@@ -120,7 +136,7 @@ exports.handler = async (event) => {
         firstName,
         lastName,
         email,
-        bookingId,
+        bookingId, //denna kan tas bort
       }),
     };
   } catch (error) {
