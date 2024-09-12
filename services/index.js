@@ -45,16 +45,14 @@ const dbCall = {
         });
     },
     updateItem: async (pk, id, data) => {
-        if(pk === 'room'){
-            await db.put({
-                TableName: 'bonz-ai-db',
-                Item: {
-                    pk: pk,
-                    sk: id,
-                    data: data
-                }
-            });    
-        }
+        await db.put({
+            TableName: 'bonz-ai-db',
+            Item: {
+                pk: pk,
+                sk: id,
+                data: data
+            }
+        });    
     },
     deleteItem: async (pk, id) => {
         await db.delete({
@@ -70,6 +68,7 @@ const dbCall = {
 const reservations = {
     getById:    (id) => dbCall.getItem('reservation', id),
     getAll:    () => dbCall.getItems('reservation'),
+    update:     (id, data) => dbCall.updateItem('reservation', id, data),
     //Här kan man lägga till create, update och delete
 }
 
