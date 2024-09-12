@@ -1,5 +1,7 @@
-const {agent} = require('../../../services');
+const {agent} = require('../../../services/index');
 const {response} = require('../../../responses/index');
+
+
 exports.handler = async (event) => {
 
   try{

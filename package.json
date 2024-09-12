@@ -1,5 +1,32 @@
 {
+  "name": "bonz-ai",
+  "version": "1.0.0",
+  "description": "Bonz-AI Serverless application deployed on AWS Lambda with DynamoDB",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "deploy": "serverless deploy",
+    "test": "mocha"
+  },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.0.0",
+    "@aws-sdk/lib-dynamodb": "^3.0.0",
     "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "serverless": "^3.39.0",
+    "serverless-offline": "^12.0.4"
+  },
+  "keywords": [
+    "aws",
+    "lambda",
+    "serverless",
+    "dynamodb"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
