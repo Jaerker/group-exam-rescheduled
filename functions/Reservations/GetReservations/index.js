@@ -1,8 +1,7 @@
-// const {db} = require('../../../services/index');
+const {agent} = require('../../../services/index');
 const {response} = require('../../../responses/index');
+
 exports.handler = async (event) => {
-
-
-
-    return response(200, 'ok fungerar i GetReservations');
-  };
+  const reservations = await agent.reservations.getAll(); 
+  return response(200, reservations);
+};

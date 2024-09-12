@@ -103,8 +103,8 @@ const rooms = {
     getById: (id) => dbCall.getItem('room', id),
     getAll: () => dbCall.getItems('room'),
     create: (data) => dbCall.createItem('room', data),
-    delete: (id) => dbCall.deleteItem('room', id),
     update: (id, data) => dbCall.updateItem('room', id, data),
+    delete: (id) => dbCall.deleteItem('room', id),
 };
 
 const agent = {
