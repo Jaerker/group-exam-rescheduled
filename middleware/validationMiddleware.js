@@ -1,14 +1,15 @@
-
-
 const validateRoomData = (room) => {
-    if( !room ||
-        !room.HasOwnProperty('roomType') || 
-        !room.HasOwnProperty('price') || 
-        !room.HasOwnProperty('bedsInRoom') || 
-        !room.HasOwnProperty('isAvaliable') || 
-        !room.HasOwnProperty('roomNumber'))
-        return false;
-    return true;
-}
+  if (
+    !room ||
+    !room.hasOwnProperty("roomType") ||
+    !room.hasOwnProperty("price") ||
+    !room.hasOwnProperty("bedsInRoom") ||
+    !room.hasOwnProperty("isAvailable") ||
+    !room.hasOwnProperty("roomNumber")
+  ) {
+    return false;
+  }
+  return true;
+};
 
-modules.export = {validateRoomData};
+module.exports = { validateRoomData };
