@@ -1,11 +1,8 @@
 const { agent } = require("../../../services/index");
-const {
-  validateRoomData,
-} = require("../../../middleware/validationMiddleware");
-const { v4: uuid } = require("uuid");
 
 exports.handler = async (event) => {
   try {
+    // Parsear JSONdatan från ett anrop
     const {
       roomType,
       amountOfRooms,
@@ -17,6 +14,7 @@ exports.handler = async (event) => {
       email,
     } = JSON.parse(event.body);
 
+    // Validering som funkar som så att om att fälten nedan inte är med när man skickar in json data så får man error
     if (
       !firstName ||
       !lastName ||
@@ -31,51 +29,57 @@ exports.handler = async (event) => {
         statusCode: 400,
         body: JSON.stringify({
           error:
-            "Room type needs to be set to Single, Double, or Suite. Check-in and check-out need to be valid. First name, last name, and email are required.",
+            "Rumstyp måste vara Enkelrum, Dubbelrum eller Svit. Inchecknings- och utcheckningsdatum måste vara giltiga. Förnamn, efternamn och e-postadress är obligatoriska.",
         }),
       };
     }
 
+    // Validering av datatyper
     if (
-      typeof firstName !== "string" ||
+      typeof firstName !== "string" || // För och efternamn måste vara en sträng
       typeof lastName !== "string" ||
-      !Array.isArray(roomType) ||
+      !Array.isArray(roomType) || //Denna och nedanstående rad gör att rumstypen hamnar i en array som en sträng
       roomType.some((type) => typeof type !== "string") ||
-      /\d/.test(firstName) ||
+      /\d/.test(firstName) || // Ser till att för och efternamn inte innehåller siffror
       /\d/.test(lastName) ||
-      roomType.some((type) => /\d/.test(type))
+      !roomType.every(
+        (
+          type // Varje rumstyp måste vara en av Enkel dubbel och svit
+        ) => ["Enkelrum", "Dubbelrum", "Svit"].includes(type)
+      )
     ) {
       return {
         statusCode: 400,
         body: JSON.stringify({
           error:
-            "First name, last name, and room type should only contain letters.",
+            "Förnamn, efternamn måste vara text, och rumstypen måste vara Enkelrum, Dubbelrum eller Svit.",
         }),
       };
     }
 
+    // Konverterar inchecknings- och utcheckningsdatum till tidsstämplar
     const checkInTimestamp = Date.parse(checkIn);
     const checkOutTimestamp = Date.parse(checkOut);
 
+    // Kontrollerar checkin och out enbart är nummer
     if (isNaN(checkInTimestamp) || isNaN(checkOutTimestamp)) {
       return {
         statusCode: 400,
         body: JSON.stringify({
-          error: "Invalid check-in or check-out date format.",
+          error: "Ogiltigt format på inchecknings- eller utcheckningsdatum.",
         }),
       };
     }
 
+    // Kontrollerar att utcheckning sker efter incheckning
     if (checkOutTimestamp <= checkInTimestamp) {
       return {
         statusCode: 400,
         body: JSON.stringify({
-          error: "Check-out date must be after check-in date.",
+          error: "Utcheckningsdatum måste vara efter incheckningsdatum.",
         }),
       };
     }
-
-    const bookingId = uuid().substring(0, 6);
 
     const bookingData = {
       roomType,
@@ -86,49 +90,16 @@ exports.handler = async (event) => {
       firstName,
       lastName,
       email,
-      bookingId,
     };
 
+    // Bokningen skapas genom reservation i services.
     await agent.reservations.create(bookingData);
-
-    for (const type of roomType) {
-      const rooms = await agent.rooms.getAllAvaliable();
-      let roomsUpdated = 0;
-      /**
-       * roomType kommer behöva vara antingen 'Enkelrum', 'Dubbelrum' eller 'Svit'
-       * 
-       * validateRoomData kommer inte behövas, då data har validerats in i databasen sen innan.
-       * 
-       * Kolla om rummet möter de kriterier man söker
-       * 
-       * kom ihåg att antalet rum får inte överstiga antalet gäster
-       * 
-       * Om rummet går att använda: 
-       *  ange rummets ID i en variabel som heter chosenRooms (en array med strängar)
-       *  I for loopen, sätt det aktuella rummets 'isAvaliable' till false (den som vars ID läggs i chosenRooms)
-       *  gör en await agent.rooms.update(room.sk, room.data)
-       * 
-       * Om det inte finnns några rum, eller inte tillräckligt med rum eller sängar så kan man returnera direkt
-       * 
-       */
-      for (const room of rooms) {
-        if (room.data.roomType === type && validateRoomData(room.data)) {
-          await agent.rooms.update(room.sk, {
-            ...room.data,
-            isAvailable: false,
-          });
-          roomsUpdated++;
-        }
-
-        if (roomsUpdated >= amountOfRooms) break;
-      }
-    }
 
     return {
       statusCode: 201,
       body: JSON.stringify({
-        message: "Booking created successfully",
-        roomType, // sätt in chosenRooms istället, alltså arrayen med rum ID 
+        message: "Bokning skapad framgångsrikt",
+        roomType, // Använd rumstypen
         amountOfRooms,
         guests,
         checkIn,
@@ -136,14 +107,13 @@ exports.handler = async (event) => {
         firstName,
         lastName,
         email,
-        bookingId, //denna kan tas bort
       }),
     };
   } catch (error) {
-    console.error("Error processing booking:", error);
+    console.error("Fel vid bearbetning av bokning:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: "Internal Server Error" }),
+      body: JSON.stringify({ error: "Internt serverfel" }),
     };
   }
 };
