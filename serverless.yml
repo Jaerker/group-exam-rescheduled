@@ -1,0 +1,92 @@
+org: ${file(./local.yml):organisation}
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: bonz-ai
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: bonz-ai
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: eu-north-1
+  deploymentMethod: direct
+  iam:
+    role: ${file(./local.yml):iamRole}
+
+functions:
+  PostReservation:
+    handler: functions/Reservations/PostReservation/index.handler
+    events:
+      - httpApi:
+          path: /reservations
+          method: post
+  GetReservations:
+    handler: functions/Reservations/GetReservations/index.handler
+    events:
+      - httpApi:
+          path: /reservations
+          method: get
+  GetReservation:
+    handler: functions/Reservations/GetReservation/index.handler
+    events:
+      - httpApi:
+          path: /reservations/{id}
+          method: get
+  UpdateReservation:
+    handler: functions/Reservations/UpdateReservation/index.handler
+    events:
+      - httpApi:
+          path: /reservations/{id}
+          method: put
+  DeleteReservation:
+    handler: functions/Reservations/DeleteReservation/index.handler
+    events:
+      - httpApi:
+          path: /reservations/{id}
+          method: delete
+  PostRoom:
+    handler: functions/Rooms/PostRoom/index.handler
+    events:
+      - httpApi:
+          path: /rooms
+          method: post
+  GetRooms:
+    handler: functions/Rooms/GetRooms/index.handler
+    events:
+      - httpApi:
+          path: /rooms
+          method: get
+  GetRoom:
+    handler: functions/Rooms/GetRoom/index.handler
+    events:
+      - httpApi:
+          path: /rooms/{id}
+          method: get
+  UpdateRoom:
+    handler: functions/Rooms/UpdateRoom/index.handler
+    events:
+      - httpApi:
+          path: /rooms/{id}
+          method: put
+  DeleteRoom:
+    handler: functions/Rooms/DeleteRoom/index.handler
+    events:
+      - httpApi:
+          path: /rooms/{id}
+          method: delete
+resources:
+  Resources:
+    EventTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: 'bonz-ai-db'
+        AttributeDefinitions:
+          - AttributeName: 'pk'
+            AttributeType: 'S'
+          - AttributeName: 'sk'
+            AttributeType: 'S'
+        KeySchema:
+          - AttributeName: 'pk'
+            KeyType: HASH
+          - AttributeName: 'sk'
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST

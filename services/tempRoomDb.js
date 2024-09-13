@@ -1,4 +1,5 @@
-[
+
+exports.rooms = [
     {
         "roomType": "Enkelrum",
         "price": 500,

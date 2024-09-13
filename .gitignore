@@ -1,4 +1,4 @@
 node_modules/
-serverless.yml
+local.yml
 .serverless/
 package-lock.json
