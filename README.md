@@ -16,7 +16,6 @@ This project provides a serverless API for managing reservations and rooms using
    - [Delete a Reservation](#delete-a-reservation)
 4. [Error Handling](#error-handling)
 5. [Environment Variables](#environment-variables)
-6. [Deployment](#deployment)
 
 ## Prerequisites
 
@@ -104,23 +103,3 @@ The API uses the following environment variables (configurable in `serverless.ym
 
 - **AWS_REGION**: AWS region for deployment (default: `eu-north-1`).
 - **DYNAMODB_TABLE**: DynamoDB table name (default: `bonz-ai-db`).
-
-## Deployment
-
-To deploy the API, use the following command in your terminal:
-
-serverless deploy
-
-After deployment, you will receive the endpoints for accessing your API functions.
-
-## Testing the API
-
-You can test the API using tools like Postman or cURL.
-
-## Additional Notes
-
-Ensure that all IAM roles and permissions are correctly configured in AWS to allow the Lambda functions to interact with DynamoDB as defined in the `serverless.yml` configuration.
-
----
-
-Feel free to reach out if you encounter any issues or need further assistance with the setup or API functionality!
