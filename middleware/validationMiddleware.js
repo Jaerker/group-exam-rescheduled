@@ -1,11 +1,11 @@
 const validateRoomData = (room) => {
   if (
     !room ||
-    !room.hasOwnProperty("roomType") ||
-    !room.hasOwnProperty("price") ||
-    !room.hasOwnProperty("bedsInRoom") ||
-    !room.hasOwnProperty("isAvailable") ||
-    !room.hasOwnProperty("roomNumber")
+    !Object.prototype.hasOwnProperty.call(room, "roomType") ||
+    !Object.prototype.hasOwnProperty.call(room, "price") ||
+    !Object.prototype.hasOwnProperty.call(room, "bedsInRoom") ||
+    !Object.prototype.hasOwnProperty.call(room, "isAvailable") ||
+    !Object.prototype.hasOwnProperty.call(room, "roomNumber")
   ) {
     return false;
   }
