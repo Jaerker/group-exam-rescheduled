@@ -14,10 +14,35 @@ exports.handler = async (event) => {
       return response(404, { message: `Reservation ID ${id} not found` });
     }
 
+    const associatedRooms = reservation.data.roomType || [];
+    let updatedRooms = [];
+
+    for (const type of associatedRooms) {
+      const rooms = await agent.rooms.getAll();
+
+      for (const room of rooms) {
+
+        if (room.data.roomType === type && !room.data.isAvailable) {
+          await agent.rooms.update(room.sk, {
+            ...room.data,
+            isAvailable: true,
+          });
+          updatedRooms.push(room.sk);
+        }
+      }
+    }
+
     await agent.reservations.delete(id);
 
-    return response(200, { message: `Reservation ID ${id} deleted successfully.` });
+    return response(200, {
+      message: `Reservation ID ${id} deleted successfully.`,
+      updatedRooms,
+    });
   } catch (error) {
-    return response(500, { error: 'Failed to delete reservation', details: error.message });
+    console.error('Error deleting reservation:', error);
+    return response(500, {
+      error: 'Failed to delete reservation',
+      details: error.message,
+    });
   }
 };
