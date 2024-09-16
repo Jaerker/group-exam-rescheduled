@@ -6,16 +6,23 @@ This project provides a serverless API for managing reservations and rooms using
 
 ## Table of Contents
 
-1. [Prerequisites](#prerequisites)
-2. [Endpoints](#endpoints)
-   - [Reservations](#reservations)
-   - [Rooms](#rooms)
-3. [Example Requests](#example-requests)
-   - [Create a Reservation](#create-a-reservation)
-   - [Get a Reservation by ID](#get-a-reservation-by-id)
-   - [Delete a Reservation](#delete-a-reservation)
-4. [Error Handling](#error-handling)
-5. [Environment Variables](#environment-variables)
+- [Bonz AI API Documentation](#bonz-ai-api-documentation)
+  - [Overview](#overview)
+  - [Table of Contents](#table-of-contents)
+  - [Prerequisites](#prerequisites)
+  - [Endpoints](#endpoints)
+    - [Reservations](#reservations)
+    - [Rooms](#rooms)
+    - [Base URLs to use](#base-urls-to-use)
+  - [Example Requests](#example-requests)
+    - [Create a Room](#create-a-room)
+    - [Get all Rooms](#get-all-rooms)
+    - [Create a Reservation](#create-a-reservation)
+    - [Get a Reservation by ID](#get-a-reservation-by-id)
+    - [Delete a Reservation](#delete-a-reservation)
+  - [Error Handling](#error-handling)
+    - [Example Error Response](#example-error-response)
+  - [Environment Variables](#environment-variables)
 
 ## Prerequisites
 
@@ -45,41 +52,64 @@ This project provides a serverless API for managing reservations and rooms using
 | PUT    | `/rooms/{id}`                | Update a room by ID.             |
 | DELETE | `/rooms/{id}`                | Delete a room by ID.             |
 
+### Base URLs to use
+
+- [Rooms](https://pmodf0kb91.execute-api.eu-north-1.amazonaws.com/rooms) - GET, POST
+- [Rooms(with ID)](https://pmodf0kb91.execute-api.eu-north-1.amazonaws.com/rooms/{id}) - GET, PUT, DELETE
+- [Reservations](https://pmodf0kb91.execute-api.eu-north-1.amazonaws.com/reservations) - GET, POST
+- [Reservations](https://pmodf0kb91.execute-api.eu-north-1.amazonaws.com/reservations/{id}) - GET, PUT, DELETE
+
 ## Example Requests
+
+### Create a Room
+
+- **Method**: POST
+- **URL**: `https://pmodf0kb91.execute-api.eu-north-1.amazonaws.com/rooms`
+- **Headers**: `Content-Type: application/json`
+- **Body**:
+  
+```json
+{
+        "roomType": "Svit",
+        "price": 1500,
+        "bedsInRoom": 3,
+        "roomNumber": "306" //needs to be unique
+}
+```
+
+- **Response:**
+  
+  ```json
+  {
+    "roomType": "Svit",
+    "price": 1500,
+    "bedsInRoom": 3,
+    "roomNumber": "306",
+    "isAvaliable": true
+  }
+  ```
+
+### Get all Rooms
+
+- **Method**: POST
+- **URL**: `https://pmodf0kb91.execute-api.eu-north-1.amazonaws.com/rooms`
+- **Headers**: `Content-Type: application/json`
 
 ### Create a Reservation
 
 - **Method**: POST
-- **URL**: `https://bmbx799vwi.execute-api.eu-north-1.amazonaws.com/reservations`
+- **URL**: `https://pmodf0kb91.execute-api.eu-north-1.amazonaws.com/reservations`
 - **Headers**: `Content-Type: application/json`
-- **Body**:
-  ```json
-  {
-    "pk": "jkba7y",
-    "sk": "reservation",
-    "object": {
-      "checkIn": true,
-      "checkOut": "404",
-      "amountOfGuests": 3,
-      "chosenRooms": [
-        "854279",
-        "98ahj1"
-      ],
-      "firstName": "Förnamn",
-      "lastName": "Efternamn",
-      "email": "mail@tillperson.com"
-    }
-  }
 
 ### Get a Reservation by ID
 
 - **Method**: GET
-- **URL**: `https://bmbx799vwi.execute-api.eu-north-1.amazonaws.com/reservations/{id}`
+- **URL**: `https://pmodf0kb91.execute-api.eu-north-1.amazonaws.com/reservations/{id}`
 
 ### Delete a Reservation
 
 - **Method**: DELETE
-- **URL**: `https://bmbx799vwi.execute-api.eu-north-1.amazonaws.com/reservations/{id}`
+- **URL**: `https://pmodf0kb91.execute-api.eu-north-1.amazonaws.com/reservations/{id}`
 
 ## Error Handling
 
@@ -90,7 +120,9 @@ Errors are returned as JSON responses with HTTP status codes:
 - **500**: Internal server error (e.g., unexpected issues).
 
 ### Example Error Response
+
 - **Body**:
+  
   ```json
   {
   "statusCode": 404,
@@ -99,7 +131,7 @@ Errors are returned as JSON responses with HTTP status codes:
 
 ## Environment Variables
 
-The API uses the following environment variables (configurable in `serverless.yml`):
+The API uses the following environment variables (configurable in `serverless.yml` through creating `local.yml` in root map and put variables inside):
 
-- **AWS_REGION**: AWS region for deployment (default: `eu-north-1`).
-- **DYNAMODB_TABLE**: DynamoDB table name (default: `bonz-ai-db`).
+- **organisation**: this variable ensures this Service is used with the correct Serverless Framework Access Key.
+- **iamRole**: this variable ensures this Service has the correct IAM Role.
